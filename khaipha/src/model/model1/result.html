@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả dự đoán vỡ nợ</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            color: #7c5c45;
+        }
+        .result-container {
+            max-width: 480px;
+            margin: 80px auto 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            padding: 36px 32px 32px 32px;
+            text-align: center;
+        }
+        .result-title {
+            font-size: 2rem;
+            margin-bottom: 18px;
+            color: #7c5c45;
+        }
+        .result-prediction {
+            font-size: 1.5rem;
+            margin: 24px 0;
+            font-weight: bold;
+        }
+        .result-proba {
+            font-size: 1.1rem;
+            color: #b89b7b;
+            margin-bottom: 18px;
+        }
+        .btn-back {
+            background: #7c5c45;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 10px 32px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 18px;
+            transition: background 0.2s;
+        }
+        .btn-back:hover {
+            background: #b89b7b;
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <div class="result-title">Kết quả dự đoán vỡ nợ</div>
+        <div id="result-content">
+            <!-- Nội dung kết quả sẽ được hiển thị ở đây -->
+        </div>
+        <button class="btn-back" onclick="window.location.href='/kiemtrano'">Quay lại</button>
+    </div>
+    <script>
+        // Lấy kết quả từ localStorage (do JS lưu sau khi predict)
+        const result = JSON.parse(localStorage.getItem('predict_result'));
+        const content = document.getElementById('result-content');
+        if (result) {
+            if (result.prediction === 1) {
+                content.innerHTML = `
+                    <div class="result-prediction" style="color:#d9534f;">Khách hàng <b>CÓ NGUY CƠ VỠ NỢ</b></div>
+                    <div class="result-proba">Xác suất vỡ nợ: <b>${(result.probability*100).toFixed(2)}%</b></div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="result-prediction" style="color:#5cb85c;">Khách hàng <b>KHÔNG CÓ NGUY CƠ VỠ NỢ</b></div>
+                    <div class="result-proba">Xác suất vỡ nợ: <b>${(result.probability*100).toFixed(2)}%</b></div>
+                `;
+            }
+        } else {
+            content.innerHTML = `<div style="color:#d9534f;">Không có dữ liệu kết quả!</div>`;
+        }
+    </script>
+    <script src="/src/model/model1/get_data.js"></script>
+</body>
+</html>
