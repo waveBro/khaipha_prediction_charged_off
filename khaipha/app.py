@@ -2,25 +2,33 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 import pandas as pd
 import numpy as np
 import joblib
-# Import the model
 import lightgbm
 from sklearn.preprocessing import StandardScaler
+import os
 
-
+# Get the current directory using absolute path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(
     "app",
-    template_folder='c:/Users/vanphuc computer/VietLe-beef/khaipha/src',
-    static_folder='c:/Users/vanphuc computer/VietLe-beef/khaipha/src',
+    template_folder=os.path.join(BASE_DIR, 'src'),
+    static_folder=os.path.join(BASE_DIR, 'src'),
     static_url_path='/src'
 )
 
-# load model
-model = joblib.load('c:/Users/vanphuc computer/VietLe-beef/khaipha/model_info/model.pkl')
-scaler  = joblib.load('c:/Users/vanphuc computer/VietLe-beef/khaipha/model_info/scaler.pkl')
-threshold = joblib.load('c:/Users/vanphuc computer/VietLe-beef/khaipha/model_info/threshold.pkl')
-model2 = joblib.load('c:/Users/vanphuc computer/VietLe-beef/khaipha/model_info2/lgb_model.pkl')
-threshold2 = joblib.load('c:/Users/vanphuc computer/VietLe-beef/khaipha/model_info2/threshold.pkl')
+# Load models using relative paths
+try:
+    model = joblib.load(os.path.join(BASE_DIR, 'model_info', 'model.pkl'))
+    scaler = joblib.load(os.path.join(BASE_DIR, 'model_info', 'scaler.pkl'))
+    threshold = joblib.load(os.path.join(BASE_DIR, 'model_info', 'threshold.pkl'))
+    model2 = joblib.load(os.path.join(BASE_DIR, 'model_info2', 'lgb_model.pkl'))
+    threshold2 = joblib.load(os.path.join(BASE_DIR, 'model_info2', 'threshold.pkl'))
+except Exception as e:
+    print(f"Error loading models: {e}")
+    print(f"Current directory: {BASE_DIR}")
+    print(f"Looking for files in: {os.path.join(BASE_DIR, 'model_info')}")
+    raise
+
 
 @app.route('/')
 def index():
